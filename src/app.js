@@ -11,6 +11,9 @@ const swaggerSpec = require("./config/swagger");
 
 const app = express();
 
+// Vercel sends X-Forwarded-For; express-rate-limit errors if trust proxy stays false
+app.set("trust proxy", 1);
+
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
