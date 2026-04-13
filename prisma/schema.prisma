@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Idea {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  aiResponse  String    @map("ai_response")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  tags        IdeaTag[]
+  likes       Like[]
+
+  @@map("ideas")
+}
+
+model Tag {
+  id    String    @id @default(uuid()) @db.Uuid
+  name  String    @unique
+  ideas IdeaTag[]
+
+  @@map("tags")
+}
+
+model IdeaTag {
+  ideaId String @map("idea_id") @db.Uuid
+  tagId  String @map("tag_id") @db.Uuid
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([ideaId, tagId])
+  @@map("idea_tags")
+}
+
+model Like {
+  id        String   @id @default(uuid()) @db.Uuid
+  ideaId    String   @map("idea_id") @db.Uuid
+  userAgent String   @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+  idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  @@unique([ideaId, userAgent])
+  @@map("likes")
+}

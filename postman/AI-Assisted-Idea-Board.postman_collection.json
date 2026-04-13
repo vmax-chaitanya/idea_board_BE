@@ -1,0 +1,116 @@
+{
+  "info": {
+    "name": "AI-Assisted Idea Board API",
+    "_postman_id": "deec85b0-6ffc-4232-9d03-d8fbdc84afc9",
+    "description": "Postman collection for Idea Board backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Idea",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"AI Powered Resume Feedback\",\n  \"description\": \"Build a service that gives personalized resume recommendations based on target job roles.\",\n  \"tags\": [\"ai\", \"career\", \"productivity\"]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ideas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ideas"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Ideas (paginated)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/ideas?page=1&limit=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ideas"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Ideas By Tag",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/ideas?tag=ai,career&page=1&limit=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ideas"
+          ],
+          "query": [
+            {
+              "key": "tag",
+              "value": "ai,career"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Like Idea",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/ideas/{{ideaId}}/like",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ideas",
+            "{{ideaId}}",
+            "like"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "ideaId",
+      "value": ""
+    }
+  ]
+}
