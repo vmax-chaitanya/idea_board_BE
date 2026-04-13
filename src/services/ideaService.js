@@ -3,7 +3,7 @@ const AppError = require("../utils/appError");
 const logger = require("../utils/logger");
 const { generateIdeaSuggestion } = require("./aiService");
 const ideaRepository = require("../repositories/ideaRepository");
-
+//tags to be normalized
 const normalizeTags = (tags = []) =>
   [...new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))];
 
