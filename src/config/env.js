@@ -2,6 +2,15 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const parseCorsOrigins = () => {
+  const raw = process.env.CORS_ORIGINS;
+  if (!raw || raw.trim() === "") {
+    return true;
+  }
+  const list = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  return list.length > 0 ? list : true;
+};
+
 module.exports = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT) || 4000,
@@ -10,4 +19,5 @@ module.exports = {
   aiProvider: process.env.AI_PROVIDER || "mock",
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
   rateLimitMaxRequests: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+  corsOrigins: parseCorsOrigins(),
 };

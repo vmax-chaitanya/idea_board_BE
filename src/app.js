@@ -9,13 +9,24 @@ const notFoundHandler = require("./middlewares/notFoundHandler");
 const errorHandler = require("./middlewares/errorHandler");
 const swaggerSpec = require("./config/swagger");
 
+const env = require("./config/env");
+
 const app = express();
 
 // Vercel sends X-Forwarded-For; express-rate-limit errors if trust proxy stays false
 app.set("trust proxy", 1);
 
-app.use(helmet());
-app.use(cors());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+app.use(
+  cors({
+    origin: env.corsOrigins,
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(rateLimiter);
 app.use(requestLogger);
