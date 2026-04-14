@@ -114,14 +114,10 @@ const createIdea = async ({ title, description, aiResponse, tags }) => {
   if (ideaErr) throw ideaErr;
 
   try {
-    for (const name of tags) {
-      const tagId = await ensureTagId(name);
-
-      const { error: linkErr } = await supabase.from("idea_tags").insert({
-        idea_id: ideaId,
-        tag_id: tagId,
-      });
-
+    if (tags.length > 0) {
+      const tagIds = await Promise.all(tags.map((name) => ensureTagId(name)));
+      const linkRows = tagIds.map((tag_id) => ({ idea_id: ideaId, tag_id }));
+      const { error: linkErr } = await supabase.from("idea_tags").insert(linkRows);
       if (linkErr) throw linkErr;
     }
   } catch (e) {

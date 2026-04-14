@@ -27,4 +27,15 @@ module.exports = {
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
   rateLimitMaxRequests: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
   corsOrigins: parseCorsOrigins(),
+  /**
+   * Max time for each Supabase HTTP request. Stay below Vercel's function limit
+   * (10s Hobby, higher on Pro) so the API can return JSON instead of FUNCTION_INVOCATION_TIMEOUT.
+   */
+  supabaseFetchTimeoutMs: (() => {
+    const raw = process.env.SUPABASE_FETCH_TIMEOUT_MS;
+    if (raw !== undefined && raw !== "" && !Number.isNaN(Number(raw))) {
+      return Math.max(1000, Number(raw));
+    }
+    return process.env.VERCEL ? 8000 : 25000;
+  })(),
 };

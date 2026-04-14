@@ -1,22 +1,29 @@
+const AppError = require("../utils/appError");
 const { sendError } = require("../utils/responseHandler");
 const logger = require("../utils/logger");
+const { toAppError } = require("../utils/mapDatabaseError");
 
 const errorHandler = (err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  const appErr = err instanceof AppError ? err : toAppError(err);
+
   logger.error(
     {
       path: req.path,
       method: req.method,
-      error: err.message,
-      stack: err.stack,
+      statusCode: appErr.statusCode,
+      error: appErr.message,
+      cause: err?.message,
+      code: err?.code,
+      stack: err?.stack,
     },
-    "Unhandled error"
+    "Request error"
   );
 
-  const statusCode = err.statusCode || 500;
-  const error = err.error || "Internal Server Error";
-  const message = err.message || "Something went wrong";
-
-  return sendError(res, error, message, statusCode);
+  return sendError(res, appErr.error, appErr.message, appErr.statusCode);
 };
 
 module.exports = errorHandler;

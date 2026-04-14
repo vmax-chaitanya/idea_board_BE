@@ -1,6 +1,21 @@
 const { createClient } = require("@supabase/supabase-js");
 const env = require("./env");
 
+const createTimeoutFetch =
+  (timeoutMs) =>
+  (input, init = {}) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    const upstream = init.signal;
+    let signal = controller.signal;
+    if (upstream && typeof AbortSignal.any === "function") {
+      signal = AbortSignal.any([upstream, controller.signal]);
+    }
+
+    return fetch(input, { ...init, signal }).finally(() => clearTimeout(timer));
+  };
+
 const createAdminClient = () => {
   const url = env.supabaseUrl;
   const key = env.supabaseServiceRoleKey;
@@ -11,6 +26,9 @@ const createAdminClient = () => {
   }
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      fetch: createTimeoutFetch(env.supabaseFetchTimeoutMs),
+    },
   });
 };
 
