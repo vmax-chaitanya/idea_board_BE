@@ -12,6 +12,31 @@ const app = express();
 // Vercel terminates TLS and forwards requests; trust proxy headers for req.ip, etc.
 app.set("trust proxy", true);
 
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const { allowedOrigins } = env;
+
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+    );
+  }
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  return next();
+});
+
 app.use(express.json({ limit: "1mb" }));
 app.use(requestLogger);
 
