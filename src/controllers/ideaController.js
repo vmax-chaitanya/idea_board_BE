@@ -1,6 +1,6 @@
 const ideaService = require("../services/ideaService");
 const { sendSuccess } = require("../utils/responseHandler");
-
+//createIdea controller
 const createIdea = async (req, res) => {
   const idea = await ideaService.createIdea(req.validated.body);
   return sendSuccess(res, idea, "Idea created successfully", 201);
