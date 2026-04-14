@@ -1,14 +1,10 @@
 const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const routes = require("./routes");
-const rateLimiter = require("./middlewares/rateLimiter");
 const requestLogger = require("./middlewares/requestLogger");
 const notFoundHandler = require("./middlewares/notFoundHandler");
 const errorHandler = require("./middlewares/errorHandler");
 const swaggerSpec = require("./config/swagger");
-
 const env = require("./config/env");
 
 const app = express();
@@ -16,19 +12,7 @@ const app = express();
 // Vercel terminates TLS and forwards requests; trust proxy headers for req.ip, etc.
 app.set("trust proxy", true);
 
-app.use(
-  helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
-);
-app.use(
-  cors({
-    origin: env.corsOrigins,
-    credentials: true,
-  })
-);
 app.use(express.json({ limit: "1mb" }));
-app.use(rateLimiter);
 app.use(requestLogger);
 
 app.get("/health", (req, res) => {
