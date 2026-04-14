@@ -21,7 +21,7 @@ const createAdminClient = () => {
   const key = env.supabaseServiceRoleKey;
   if (!url || !key) {
     throw new Error(
-      "Supabase: set SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY in your environment."
+      "Supabase: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your environment."
     );
   }
   return createClient(url, key, {

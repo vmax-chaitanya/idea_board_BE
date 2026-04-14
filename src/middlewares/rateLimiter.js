@@ -28,14 +28,8 @@ const addressFromForwardedHeader = (forwarded) => {
   return value;
 };
 
-/**
- * Client address for rate limiting on Vercel / serverless-http, where `req.ip`
- * is often undefined even though proxy headers are present.
- */
+/** Client address for rate limiting when behind proxies/load balancers. */
 const clientAddressForRateLimit = (req) => {
-  const fromVercel = firstForwardedFor(req.headers["x-vercel-forwarded-for"]);
-  if (fromVercel) return fromVercel;
-
   const fromXff = firstForwardedFor(req.headers["x-forwarded-for"]);
   if (fromXff) return fromXff;
 
