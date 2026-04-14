@@ -15,8 +15,9 @@ app.set("trust proxy", true);
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   const { allowedOrigins } = env;
+  const allowAllOrigins = allowedOrigins.length === 0;
 
-  if (origin && allowedOrigins.includes(origin)) {
+  if (origin && (allowAllOrigins || allowedOrigins.includes(origin))) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
     res.setHeader("Access-Control-Allow-Credentials", "true");
