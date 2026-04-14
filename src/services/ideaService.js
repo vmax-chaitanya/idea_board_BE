@@ -1,4 +1,3 @@
-const { Prisma } = require("@prisma/client");
 const AppError = require("../utils/appError");
 const logger = require("../utils/logger");
 const { generateIdeaSuggestion } = require("./aiService");
@@ -72,10 +71,7 @@ const likeIdea = async (ideaId, userAgent) => {
     logger.info({ ideaId, userAgent }, "Idea liked");
     return { idea_id: ideaId, liked: true };
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002"
-    ) {
+    if (error?.code === "23505") {
       throw new AppError("You have already liked this idea", 409, "Conflict");
     }
     throw error;
