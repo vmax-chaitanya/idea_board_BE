@@ -13,8 +13,8 @@ const env = require("./config/env");
 
 const app = express();
 
-// Vercel sends X-Forwarded-For; express-rate-limit errors if trust proxy stays false
-app.set("trust proxy", 1);
+// Vercel terminates TLS and forwards requests; trust proxy headers for req.ip, etc.
+app.set("trust proxy", true);
 
 app.use(
   helmet({
